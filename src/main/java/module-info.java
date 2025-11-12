@@ -6,6 +6,7 @@ module org.example.demo {
     requires java.naming;
     requires jdk.jfr;
     requires static lombok;
+    requires java.desktop;
 
 
     opens org.example.demo to javafx.fxml;

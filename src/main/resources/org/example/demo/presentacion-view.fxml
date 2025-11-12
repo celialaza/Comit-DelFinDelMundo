@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.UI.PresentacionController">
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="65.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="btnInstrucciones" mnemonicParsing="false" onAction="#Instrucciones" text="Instrucciones" textOverrun="CLIP">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnJugar" mnemonicParsing="false" onAction="#Jugar" text="Jugar" />
+         </children>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+      </HBox>
+   </bottom>
+   <top>
+      <Label fx:id="lblTitulo" text="El comité del fin del mundo" textFill="#fff8f8" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="DejaVu Serif Bold" size="12.0" />
+         </font>
+      </Label>
+   </top>
+   <center>
+      <ImageView fx:id="mainImageView" fitHeight="227.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+         <image>
+            <Image url="@comiteprincipal.jpg" />
+         </image>
+      </ImageView>
+   </center>
+</BorderPane>
