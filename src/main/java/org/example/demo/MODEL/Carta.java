@@ -1,6 +1,7 @@
 package org.example.demo.MODEL;
 
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,4 +16,7 @@ public class Carta {
     private int bienestar;
     private int legado;
     private int recursos;
-}
+
+
+    }
+

@@ -12,4 +12,6 @@ module org.example.demo {
     exports org.example.demo;
     exports org.example.demo.UI;
     opens org.example.demo.UI to javafx.fxml;
+    exports org.example.demo.DB;
+    opens org.example.demo.DB to javafx.fxml;
 }
