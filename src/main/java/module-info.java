@@ -4,6 +4,8 @@ module org.example.demo {
     requires java.sql;
     requires mysql.connector.j;
     requires java.naming;
+    requires jdk.jfr;
+    requires static lombok;
 
 
     opens org.example.demo to javafx.fxml;
