@@ -1,0 +1,79 @@
+/* Estilo para el contenedor raíz (el BorderPane) */
+.root {
+    -fx-background-color: #1A222C;
+    /*-fx-background-image: url("comiteprincipal.jpg");*/
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover; /* Esto la estira para que quepa */
+    -fx-background-position: center center;
+}
+
+.button {
+    -fx-background-color: #30B8D0;
+    -fx-text-fill: white;
+    -fx-font-family: "System";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 20px;
+}
+
+.button:hover {
+    -fx-background-color: white;
+    -fx-text-fill: #2E3440;
+}
+
+#btnInstrucciones {
+    -fx-background-color: #E67E22;
+    -fx-text-fill: white;
+}
+#btnInstrucciones:hover{
+    -fx-background-color: white;
+    -fx-text-fill: #2E3440;
+
+}
+
+#lblTitulo{
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #BDECF5;
+    -fx-font-family: "Verdana", "System";
+
+    /* Opcional: una ligera sombra para que se lea mejor sobre el fondo */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.7), 10, 0, 0, 3);
+
+}
+
+/*Estilo de la Ventana de instruciones*/
+.my-dialog {
+    -fx-background-color: #1A222C;
+    -fx-border-color: #E67E22;
+    -fx-border-width: 2px;
+}
+
+.my-dialog .header-panel {
+    -fx-background-color: #1A222C;
+}
+
+.my-dialog .header-panel .label {
+    -fx-text-fill: #BDECF5;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.my-dialog .content.label {
+    -fx-background-color: #1A222C;
+    -fx-text-fill: #BDECF5;
+    -fx-font-size: 14px;
+    -fx-text-alignment: justify;
+}
+
+.my-dialog .button {
+    -fx-background-color: #E67E22;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.my-dialog .button:hover {
+    -fx-background-color: white;
+    -fx-text-fill: #2E3440;
+}
