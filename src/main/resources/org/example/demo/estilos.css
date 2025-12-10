@@ -105,3 +105,55 @@
     -fx-border-color: white;
     -fx-background-color: rgba(255, 255, 255, 0.1); /* Fondo muy sutil */
 }
+
+
+
+/* --- ESTILOS PARA LA PANTALLA DE MODO INDIVIDUAL --- */
+
+/* La tarjeta azul claro del centro */
+.tarjeta-azul {
+    -fx-background-color: #B2EBF2; /* Un cyan muy clarito */
+    -fx-background-radius: 20px;   /* Bordes muy redondeados */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 5); /* Sombra para que flote */
+}
+
+/* El título en negro (sobreescribe al blanco anterior) */
+.titulo-negro {
+    -fx-font-family: "System";
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #000000; /* Negro puro */
+}
+
+/* El input redondeado y blanco */
+.input-redondo {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: #999999;
+}
+
+/* Botón Naranja (Atrás) */
+.boton-naranja {
+    -fx-background-color: #E67E22;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20px; /* Más redondeado que los anteriores */
+    -fx-padding: 8px 20px;
+}
+.boton-naranja:hover {
+    -fx-background-color: #D35400;
+}
+
+/* Botón Azul Cyan (Continuar) */
+.boton-azul {
+    -fx-background-color: #26C6DA; /* Cyan oscuro */
+    -fx-text-fill: #2E3440; /* Texto oscuro para contraste */
+    -fx-font-weight: bold;
+    -fx-background-radius: 20px;
+    -fx-padding: 8px 20px;
+}
+.boton-azul:hover {
+    -fx-background-color: #80DEEA;
+}
