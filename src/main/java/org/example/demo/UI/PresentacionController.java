@@ -1,9 +1,14 @@
 package org.example.demo.UI;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 
@@ -55,23 +60,16 @@ public class PresentacionController {
         private void Jugar() {
             logger.info("Iniciando el juego...");
 
-            /*
-            try {
-                // Carga el FXML de la SIGUIENTE vista (Paso 2 de 5)
-                // Asegúrate de crear un 'ModoJuegoView.fxml' vacío
-                Parent siguienteVistaRoot = FXMLLoader.load(getClass().getResource("ModoJuegoView.fxml"));
-
-                // Coge la ventana actual
-                Stage ventanaActual = (Stage) btnJugar.getScene().getWindow();
-
-                // Pone la nueva vista en la ventana
-                ventanaActual.setScene(new Scene(siguienteVistaRoot));
-
-            } catch (IOException e) {
-                System.out.println("Error al cargar ModoJuegoView.fxml. ¿Lo has creado?");
-                e.printStackTrace();
+                try {
+                    // CAMBIA "ModoJuegoView.fxml" por la ruta correcta si es necesario
+                    Parent root = FXMLLoader.load(getClass().getResource("/org/example/demo/modo-juego-view.fxml"));
+                    Stage stage = (Stage) btnJugar.getScene().getWindow();
+                    stage.setScene(new Scene(root));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }*/
-    }
+
+
 
 }

@@ -1,10 +1,8 @@
 package org.example.demo.MODEL;
 
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
 @AllArgsConstructor
 @Data
 public class Carta {

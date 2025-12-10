@@ -32,6 +32,16 @@
 
 }
 
+#btnGrupo{
+    -fx-background-color: #E67E22;
+    -fx-text-fill: white;
+}
+#btnGrupo:hover{
+    -fx-background-color: white;
+    -fx-text-fill: #2E3440;
+}
+
+
 #lblTitulo{
     -fx-font-size: 32px;
     -fx-font-weight: bold;
@@ -76,4 +86,22 @@
 .my-dialog .button:hover {
     -fx-background-color: white;
     -fx-text-fill: #2E3440;
+}
+/* ... (tus estilos anteriores para .root, .titulo, .button etc.) ... */
+
+/* Estilo específico para el botón "Volver" (más discreto) */
+.boton-volver {
+    -fx-background-color: transparent; /* Fondo transparente */
+    -fx-text-fill: #B0B0B0;            /* Texto gris claro */
+    -fx-border-color: #B0B0B0;         /* Borde gris */
+    -fx-border-radius: 5px;
+    -fx-border-width: 1px;
+    -fx-font-size: 12px;               /* Un poco más pequeño */
+}
+
+/* Efecto al pasar el ratón por encima del botón Volver */
+.boton-volver:hover {
+    -fx-text-fill: white;              /* Se ilumina a blanco */
+    -fx-border-color: white;
+    -fx-background-color: rgba(255, 255, 255, 0.1); /* Fondo muy sutil */
 }
