@@ -45,36 +45,56 @@ public class InputNombreController {
 
 
         if (esModoGrupo) {
-            System.out.println("GUARDADO - Presidente del Grupo: " + textoIngresado);
+            cargarPantallaDecision();
 
 
         } else {
-
-            System.out.println("GUARDADO - Nombre del Comité: " + textoIngresado);
+            iniciarPartidaDirectamente();
 
         }
-
-        lanzarJuego();
     }
 
-    private void lanzarJuego() {
-        System.out.println("Cargando pantalla de decisión...");
+    // Método 1: Carga la pantalla de decisión (Solo Grupo)
+    private void cargarPantallaDecision() {
+        try {
+            String ruta = "/org/example/demo/decision-presidente-view.fxml";
 
-            try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
+            Parent root = loader.load();
 
-                String ruta = "/org/example/demo/decision-presidente-view.fxml";
+            Stage stage = (Stage) campoNombre.getScene().getWindow();
+            stage.setScene(new Scene(root));
 
-                javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource(ruta));
-                javafx.scene.Parent root = loader.load();
-
-                javafx.stage.Stage stage = (Stage) campoNombre.getScene().getWindow();
-                stage.setScene(new javafx.scene.Scene(root));
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error al cargar la pantalla de decisión.");
         }
+    }
 
+    // Método 2: Carga el juego directamente (Solo Individual)
+    private void iniciarPartidaDirectamente() {
+        try {
+            String ruta = "/org/example/demo/JuegoView.fxml";
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
+            Parent root = loader.load();
+
+            // Creamos la partida
+            org.example.demo.LOGIC.Partida nuevaPartida = new org.example.demo.LOGIC.Partida();
+
+            //Se la pasamos al controlador del juego
+            JuegoController controller = loader.getController();
+            controller.setPartida(nuevaPartida);
+
+            //Mostramos la pantalla
+            Stage stage = (Stage) campoNombre.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error al cargar la pantalla del Juego.");
+        }
+    }
 
 
     @FXML

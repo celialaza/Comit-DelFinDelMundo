@@ -197,3 +197,112 @@
     -fx-background-color: #00BCD4;
     -fx-text-fill: white;
 }
+/* --- ESTILOS PANTALLA PRINCIPAL DEL JUEGO --- */
+
+/* La tarjeta contenedora central (Gris azulado oscuro) */
+.carta-central {
+    -fx-background-color: #455A64; /* Color aproximado de la imagen */
+    -fx-background-radius: 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 15, 0, 0, 5);
+}
+
+/* Textos pequeños de estadísticas e inventario */
+.texto-stat, .texto-inventario-titulo, .texto-inventario-contador {
+    -fx-text-fill: #B2EBF2; /* Cyan muy claro */
+    -fx-font-weight: bold;
+    -fx-font-family: "System";
+}
+.texto-inventario-contador {
+    -fx-font-size: 18px;
+}
+
+/* Título grande de la carta */
+.titulo-carta {
+    -fx-text-fill: #B2EBF2;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-font-family: "System";
+}
+
+/* La caja redondeada azul claro para la descripción */
+.descripcion-box {
+    -fx-background-color: #B2EBF2; /* El color cyan de fondo */
+    -fx-background-radius: 15px;   /* Bordes redondeados externos */
+    -fx-border-radius: 15px;
+
+    /* TAMAÑO FIJO: Importante para que aparezca el scroll si el texto se pasa */
+    -fx-min-height: 90px;
+    -fx-max-height: 90px;
+    -fx-pref-height: 90px;
+
+    /* Quitamos el borde gris feo que trae por defecto el ScrollPane */
+    -fx-background-insets: 0;
+    -fx-padding: 5px; /* Un poco de margen interno para el texto */
+}
+/* TRUCO: Hacemos transparente la "ventana" interna del scroll
+   para que se vea el color redondeado de atrás */
+.descripcion-box > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* El texto dentro de la caja de descripción */
+.texto-descripcion {
+    -fx-text-fill: #263238;
+    -fx-font-size: 13px;
+    -fx-padding: 0 5px 0 0; /* Espacio a la derecha para que no pegue con la barra */
+}
+
+/* Opcional: Estilizar la barrita (thumb) para que pegue con el juego */
+.descripcion-box .scroll-bar:vertical .thumb {
+    -fx-background-color: #455A64; /* Color oscuro del tema */
+    -fx-background-radius: 5px;
+}
+/* 1. Nuevo estilo para el VBox que contiene SOLO la carta (Título, img, desc) */
+.marco-carta-interna {
+    -fx-background-color:#3E5066; /* Un fondo oscuro semitransparente */
+    -fx-background-radius: 15px;
+    -fx-padding: 15px;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 15px;
+    -fx-border-width: 2px;
+}
+
+/* 2. Caja de descripción con TAMAÑO FIJO */
+/* Esto evita que la pantalla baile según el texto */
+.descripcion-box {
+    -fx-background-color: #B2EBF2;
+    -fx-background-radius: 15px;
+
+    /* ¡AQUÍ ESTÁ EL TRUCO DEL TAMAÑO FIJO! */
+    -fx-min-height: 90px;
+    -fx-max-height: 90px;
+    -fx-pref-height: 90px;
+
+    /* Para centrar el contenido */
+    -fx-alignment: center;
+}
+
+.texto-descripcion {
+    -fx-text-fill: #263238;
+    -fx-font-size: 13px; /* Un pelín más pequeña para que quepa más texto */
+}
+
+/* --- BARRA DE ESTADÍSTICAS (Estilo Pastilla) --- */
+
+.stats-container {
+    -fx-background-color: #B2EBF2;
+    -fx-background-radius: 30px;
+
+    /* CAMBIO: Reducimos el segundo valor (lados) de 20px a 15px o 10px */
+    -fx-padding: 5px 15px;
+
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+/* Texto de estadísticas OSCURO (para que se vea sobre el fondo claro) */
+.texto-stat-oscuro {
+    -fx-text-fill: #263238; /* Gris muy oscuro / Negro */
+    -fx-font-weight: bold;
+    -fx-font-family: "System";
+    -fx-font-size: 13px;
+}

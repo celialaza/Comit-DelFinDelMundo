@@ -18,7 +18,7 @@
 
             <HBox alignment="CENTER" spacing="50.0">
                 <children>
-                    <Button text="+1 ESPACIO" onAction="#elegirEspacio" styleClass="btn-decision-naranja"/>
+                    <Button fx:id="btnEspacio" text="+1 ESPACIO" onAction="#elegirEspacio" styleClass="btn-decision-naranja"/>
 
                     <Button text="Salvación&#10;presidente" textAlignment="CENTER" onAction="#elegirSalvacion" styleClass="btn-decision-azul"/>
                 </children>

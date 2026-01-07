@@ -31,13 +31,16 @@ public class Partida {
     // Usamos la interfaz
     private DAO cartaDAO;
 
+    private int capacidadInventario = 10;
+    private boolean presidenteSalvado = false;
+
     public Partida() {
         // Al iniciar la partida, se carga el mazo
         this.cartaDAO = new CartaDAO();
         this.mazoCartas = cartaDAO.cargarCartas();
     }
 
-    /**
+    /*
      * Devuelve la siguiente carta del mazo.
      */
     public Carta getSiguienteCarta() {
@@ -70,13 +73,23 @@ public class Partida {
         cartaActualIndex++;
     }
 
+
+    public void aumentarCapacidadInventario() {
+        this.capacidadInventario = 11;
+    }
+
+    public void salvarPresidente() {
+        this.presidenteSalvado = true;
+    }
+
     /**
      * Comprueba si el juego termina.
      */
     public boolean isJuegoTerminado() {
         // Termina si el inventario está lleno o si se acaba el mazo
-        return inventario.size() >= 10 || cartaActualIndex >= mazoCartas.size();
+        return inventario.size() >= capacidadInventario || cartaActualIndex >= mazoCartas.size();
     }
+
 
     /**
      * Calcula el resultado final basado en la puntuación.
