@@ -23,7 +23,7 @@ INSERT INTO Cartas (
 )
 VALUES
     -- 1. Estrella de TikTok
-    ('Estrella de TikTok', 'Una estrella de TikTok con millones de seguidores que ha convertido su creatividad y carisma en un imperio.', 'img/01_tiktok_star.png', -10, 35, 15, 0),
+    ('Estrella de TikTok', 'Una estrella de TikTok con millones de seguidores que ha convertido su creatividad y carisma en un imperio.', 'img/tiktoker.jpg', -10, 35, 15, 0),
 
     -- 2. Médico Joven (1)
     ('Médico Joven (1)', 'Un médico joven y guapo que acaba de terminar su residencia. Es el médico que todas las mujeres (y hombres) sueñan con tener. Su sonrisa derrite corazones, pero es su calidez y compasión lo que te hace querer quedarte a su lado para siempre.', 'img/02_medico_joven.png', 30, 10, 15, 5),
@@ -110,4 +110,4 @@ VALUES
     ('Seres Queridos', 'Los seres queridos de ass. Lo siento, pero vosotros no vais incluidos en esta opción.', 'img/29_seres_queridos.png', -10, 40, 0, -10),
 
     -- 30. Integrantes del Comité
-    ('Integrantes del Comité', 'Los integrantes del comité.', 'img/30_comite.png', 0, 0, 5, 5)
+    ('Integrantes del Comité', 'Los integrantes del comité.', 'sds.png', 0, 0, 5, 5)
