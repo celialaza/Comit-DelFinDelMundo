@@ -157,3 +157,43 @@
 .boton-azul:hover {
     -fx-background-color: #80DEEA;
 }
+/* --- PANTALLA DECISIÓN PRESIDENTE --- */
+
+.titulo-decision {
+    -fx-font-family: "System"; /* O la fuente que uses */
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #B2EBF2; /* Un azul muy pálido, casi blanco */
+}
+
+/* Botón Naranja (+1 ESPACIO) */
+.btn-decision-naranja {
+    -fx-background-color: #E67E22;
+    -fx-text-fill: #1A1A1A; /* Texto oscuro para contraste, o white si prefieres */
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-radius: 12px;
+    -fx-padding: 15px 30px; /* Botón grande */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0, 0, 3);
+}
+
+.btn-decision-naranja:hover {
+    -fx-background-color: #D35400;
+    -fx-text-fill: white;
+}
+
+/* Botón Azul (Salvación) */
+.btn-decision-azul {
+    -fx-background-color: #26C6DA;
+    -fx-text-fill: #1A1A1A;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-radius: 12px;
+    -fx-padding: 15px 30px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0, 0, 3);
+}
+
+.btn-decision-azul:hover {
+    -fx-background-color: #00BCD4;
+    -fx-text-fill: white;
+}

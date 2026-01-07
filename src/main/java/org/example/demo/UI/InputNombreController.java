@@ -58,16 +58,23 @@ public class InputNombreController {
     }
 
     private void lanzarJuego() {
-        System.out.println("¡Todo listo! Cambiando a la pantalla de juego...");
-        try {
-            // FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/demo/UI/JuegoView.fxml"));
-            // Parent root = loader.load();
-            // Stage stage = (Stage) campoNombre.getScene().getWindow();
-            // stage.setScene(new Scene(root));
-        } catch (Exception e) {
-            e.printStackTrace();
+        System.out.println("Cargando pantalla de decisión...");
+
+            try {
+
+                String ruta = "/org/example/demo/decision-presidente-view.fxml";
+
+                javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource(ruta));
+                javafx.scene.Parent root = loader.load();
+
+                javafx.stage.Stage stage = (Stage) campoNombre.getScene().getWindow();
+                stage.setScene(new javafx.scene.Scene(root));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-    }
+
 
 
     @FXML
