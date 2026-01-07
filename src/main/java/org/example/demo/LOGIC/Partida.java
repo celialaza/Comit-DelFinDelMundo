@@ -1,8 +1,5 @@
 package org.example.demo.LOGIC;
 
-//Esta clase mantiene el estado de la partida
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.example.demo.DB.CartaDAO;
 import org.example.demo.DB.DAO;
@@ -11,66 +8,30 @@ import org.example.demo.MODEL.Carta;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
 @Data
 public class Partida {
 
-    // Estadísticas
+
     private int salud = 50;
     private int bienestar = 50;
     private int legado = 50;
     private int recursos = 50;
 
-    //Inventario
-    private List<Carta> inventario = new ArrayList<>(10);
-
-    // Opciones cargadas de la BD
-    private List<Carta> mazoCartas;
-    private int cartaActualIndex = 0;
-
-    // Usamos la interfaz
-    private DAO cartaDAO;
 
     private int capacidadInventario = 10;
-    private boolean presidenteSalvado = false;
+    private List<Carta> inventario = new ArrayList<>();
+
+
+    private List<Carta> mazoCartas;
+    private int cartaActualIndex = 0;
+    private boolean presidenteSalvado = false; // Para el otro bonus
+
+
+    private DAO cartaDAO;
 
     public Partida() {
-        // Al iniciar la partida, se carga el mazo
         this.cartaDAO = new CartaDAO();
         this.mazoCartas = cartaDAO.cargarCartas();
-    }
-
-    /*
-     * Devuelve la siguiente carta del mazo.
-     */
-    public Carta getSiguienteCarta() {
-        if (cartaActualIndex < mazoCartas.size()) {
-            return mazoCartas.get(cartaActualIndex);
-        }
-        return null;
-    }
-
-    /**
-     * Método llamado si el jugador elige la carta.
-     */
-    public void elegirCarta(Carta carta) {
-        if (inventario.size() < 10) {
-            inventario.add(carta);
-        }
-        // Sumar estadísticas
-        this.salud += carta.getSalud();
-        this.bienestar += carta.getBienestar();
-        this.legado += carta.getLegado();
-        this.recursos += carta.getRecursos();
-
-        cartaActualIndex++;
-    }
-
-    /**
-     * Método llamado si el jugador descarta.
-     */
-    public void descartarCarta() {
-        cartaActualIndex++;
     }
 
 
@@ -82,45 +43,58 @@ public class Partida {
         this.presidenteSalvado = true;
     }
 
-    /**
-     * Comprueba si el juego termina.
-     */
-    public boolean isJuegoTerminado() {
-        // Termina si el inventario está lleno o si se acaba el mazo
-        return inventario.size() >= capacidadInventario || cartaActualIndex >= mazoCartas.size();
+
+    public Carta getSiguienteCarta() {
+        if (cartaActualIndex < mazoCartas.size()) {
+            return mazoCartas.get(cartaActualIndex);
+        }
+        return null;
     }
 
+    public void elegirCarta(Carta carta) {
+        if (inventario.size() < capacidadInventario) {
+            inventario.add(carta);
 
-    /**
-     * Calcula el resultado final basado en la puntuación.
-     */
+            this.salud += carta.getSalud();
+            this.bienestar += carta.getBienestar();
+            this.legado += carta.getLegado();
+            this.recursos += carta.getRecursos();
+        } else {
+            System.out.println("¡Inventario lleno! No se pudo añadir la carta.");
+        }
+
+        cartaActualIndex++;
+    }
+
+    public void descartarCarta() {
+        cartaActualIndex++;
+    }
+
+    public boolean isJuegoTerminado() {
+        boolean inventarioLleno = inventario.size() >= capacidadInventario;
+        boolean mazoTerminado = cartaActualIndex >= mazoCartas.size();
+
+        return inventarioLleno || mazoTerminado;
+    }
+
     public String getResultadoFinal() {
-
         final int UMBRAL_FRACASO = 25;
 
+
         if (salud < UMBRAL_FRACASO || bienestar < UMBRAL_FRACASO || legado < UMBRAL_FRACASO || recursos < UMBRAL_FRACASO) {
+            String causa = "causas desconocidas";
+            if (salud < UMBRAL_FRACASO) causa = "la enfermedad (salud)";
+            else if (bienestar < UMBRAL_FRACASO) causa = "la desesperación (bienestar)";
+            else if (recursos < UMBRAL_FRACASO) causa = "el hambre (recursos)";
+            else if (legado < UMBRAL_FRACASO) causa = "la anarquía (legado)";
 
-            String causaDelFracaso = "la anarquía (legado)";
-            if (salud < UMBRAL_FRACASO) causaDelFracaso = "la enfermedad (salud)";
-            if (bienestar < UMBRAL_FRACASO) causaDelFracaso = "la desesperación (bienestar)";
-            if (recursos < UMBRAL_FRACASO) causaDelFracaso = "el hambre (recursos)";
-
-            return "Tu colonia está ABOCADA AL FRACASO. A pesar de tus esfuerzos, " + causaDelFracaso + " ha destruido vuestra esperanza.";
+            return "Tu colonia ha FRACASADO debido a " + causa + ".";
         }
 
+        int puntuacion = Math.min(Math.min(salud, bienestar), Math.min(legado, recursos));
 
-        int puntuacionEquilibrio = Math.min(salud,
-                Math.min(bienestar,
-                        Math.min(legado, recursos)));
-
-
-        if (puntuacionEquilibrio > 80) {
-            return "¡Tu colonia es PROSPERA! Un nuevo amanecer, perfectamente equilibrado. Has construido una utopía.";
-        } else if (puntuacionEquilibrio > 50) {
-            return "Tu colonia SOBREVIVE. Será duro, pero los cimientos son sólidos. Hay esperanza.";
-        } else {
-            return "Tu colonia AGUANTA... a duras penas. El primer invierno será una prueba de fuego. Revisa tus prioridades.";
-        }
+        if (puntuacion > 80) return "¡ÉXITO TOTAL! Una utopía perfecta.";
+        if (puntuacion > 50) return "SOBREVIVÍS. Será duro, pero hay esperanza.";
+        return "SOBREVIVÍS POR LOS PELOS. El invierno será cruel.";
     }
-    }
-
+}
