@@ -1,12 +1,20 @@
 package org.example.demo.UI;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import org.example.demo.LOGIC.Partida; // Importamos tu lógica
-import org.example.demo.MODEL.Carta;   // Importamos tu modelo
+import javafx.stage.Stage;
+import org.example.demo.LOGIC.Partida;
+import org.example.demo.MODEL.Carta;
+import javafx.stage.Modality;
+import javafx.stage.StageStyle; // quita bordes de ventana
+
+import java.io.IOException;
 
 public class JuegoController {
 
@@ -99,6 +107,32 @@ public class JuegoController {
             cargarSiguienteCarta();
         }
     }
+    @FXML
+    private void abrirInventario() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/demo/inventario-view.fxml"));
+            Parent root = loader.load();
+
+            // Pasamos los datos
+            InventarioController controller = loader.getController();
+            controller.cargarDatos(partidaActual.getInventario());
+
+            // Configurar la ventana modal (Dialog)
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL); // Bloquea la ventana de atrás
+            stage.setTitle("Inventario");
+            stage.setScene(new Scene(root));
+
+            //Que no se pueda redimensionar
+            stage.setResizable(false);
+
+            stage.showAndWait(); // Espera a que se cierre
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void mostrarFinDeJuego() {
         String resultado = partidaActual.getResultadoFinal();
@@ -112,4 +146,5 @@ public class JuegoController {
 
         // Aquí podrías cerrar la ventana o navegar al menú principal
     }
+
 }

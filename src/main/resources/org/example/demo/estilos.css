@@ -306,3 +306,42 @@
     -fx-font-family: "System";
     -fx-font-size: 13px;
 }
+/* --- ESTILOS INVENTARIO --- */
+
+.root-inventario {
+    -fx-background-color: #263238; /* Fondo oscuro */
+    -fx-border-color: #B2EBF2;
+    -fx-border-width: 2px;
+}
+
+.titulo-inventario {
+    -fx-text-fill: #B2EBF2;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.scroll-inventario {
+    -fx-background: #263238;
+    -fx-background-color: transparent;
+}
+
+.scroll-inventario > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ESTILO DE CADA MINI-CARTA  */
+.item-inventario {
+    -fx-background-color: #455A64;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 2);
+    -fx-padding: 10px;
+    -fx-alignment: center;
+}
+
+.texto-item-inventario {
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+    -fx-font-weight: bold;
+}
