@@ -55,7 +55,7 @@
                     <HBox alignment="CENTER" spacing="10.0" VBox.vgrow="ALWAYS">
                         <children>
 
-                            <VBox alignment="TOP_CENTER" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" spacing="10.0">
+                            <VBox onMouseClicked="#abrirInventario" alignment="TOP_CENTER" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" spacing="10.0">
                                 <Label styleClass="texto-inventario-titulo" text="INVENTARIO" />
                                 <Label fx:id="lblInventarioContador" styleClass="texto-inventario-contador" text="7/10" />
                                 <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
