@@ -1,6 +1,22 @@
 
 CREATE DATABASE IF NOT EXISTS juego_db;
 USE juego_db;
+
+CREATE TABLE IF NOT EXISTS Historial_Partidas (
+                                                  id INT AUTO_INCREMENT PRIMARY KEY,
+                                                  nombre_comite VARCHAR(100),
+                                                  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                                  resultado VARCHAR(50), -- "VICTORIA" o "DERROTA"
+                                                  nombre_presidente_salvado VARCHAR(100) -- Se rellena solo si se salvó él mismo
+);
+
+-- TABLA NUEVA 2: Inventario de cada partida
+CREATE TABLE IF NOT EXISTS Historial_Inventario (
+                                                    id INT AUTO_INCREMENT PRIMARY KEY,
+                                                    partida_id INT,
+                                                    titulo_carta VARCHAR(100),
+                                                    FOREIGN KEY (partida_id) REFERENCES Historial_Partidas(id) ON DELETE CASCADE
+);
 CREATE TABLE IF NOT EXISTS Cartas (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         titulo VARCHAR(100) NOT NULL,

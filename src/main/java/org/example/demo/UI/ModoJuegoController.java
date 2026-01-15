@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -24,13 +23,11 @@ public class ModoJuegoController {
 
     @FXML
     private void jugarIndividual() {
-        // false = Modo individual (pedirá Comité)
         abrirInputNombre(false);
     }
 
     @FXML
     private void jugarGrupo() {
-        // true = Modo grupo (pedirá Presidente)
         abrirInputNombre(true);
     }
 
@@ -40,17 +37,10 @@ public class ModoJuegoController {
             Parent root = loader.load();
 
             InputNombreController controller = loader.getController();
+            controller.setModoJuego(esGrupo);
 
-            if (esGrupo) {
-                // Si es grupo, llamamos al método que cambia el título a PRESIDENTE
-                controller.setModoPresidente();
-            } else {
-                // Si es individual, llamamos al método normal (título COMITÉ)
-                controller.setModoJuego(false);
-            }
-
-            Stage stage = (Stage) btnIndividual.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            // MANTENER TAMAÑO: Cambiar solo el root
+            btnIndividual.getScene().setRoot(root);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -61,8 +51,8 @@ public class ModoJuegoController {
     private void volverAtras() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/org/example/demo/presentacion-view.fxml"));
-            Stage stage = (Stage) btnIndividual.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            // MANTENER TAMAÑO
+            btnIndividual.getScene().setRoot(root);
         } catch (IOException e) {
             e.printStackTrace();
         }

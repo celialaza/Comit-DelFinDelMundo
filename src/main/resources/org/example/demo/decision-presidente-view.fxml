@@ -13,14 +13,18 @@
             fx:controller="org.example.demo.UI.DecisionPresidenteController">
 
     <center>
-        <VBox alignment="CENTER" spacing="60.0">
+        <VBox alignment="CENTER" spacing="30.0">
             <Label text="LA DECISIÓN SECRETA DEL PRESIDENTE" styleClass="titulo-decision" wrapText="true" textAlignment="CENTER"/>
+
+            <Label fx:id="lblExplicacion" text="Cargando opciones del presidente..."
+                   wrapText="true" textAlignment="CENTER" maxWidth="550.0"
+                   style="-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold;"/>
 
             <HBox alignment="CENTER" spacing="50.0">
                 <children>
                     <Button fx:id="btnEspacio" text="+1 ESPACIO" onAction="#elegirEspacio" styleClass="btn-decision-naranja"/>
 
-                    <Button text="Salvación&#10;presidente" textAlignment="CENTER" onAction="#elegirSalvacion" styleClass="btn-decision-azul"/>
+                    <Button fx:id="btnSalvacion" text="Salvación&#10;presidente" textAlignment="CENTER" onAction="#elegirSalvacion" styleClass="btn-decision-azul"/>
                 </children>
             </HBox>
         </VBox>
