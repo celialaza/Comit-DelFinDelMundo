@@ -13,29 +13,20 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.demo.LOGIC.Partida;
 import org.example.demo.MODEL.Carta;
-
 import java.io.IOException;
 
 public class JuegoController {
 
-    @FXML private Label lblStat1;
-    @FXML private Label lblStat2;
-    @FXML private Label lblStat3;
-    @FXML private Label lblStat4;
-
-    @FXML private Label lblInventarioContador;
-    @FXML private Label lblTituloCarta;
+    @FXML private Label lblStat1, lblStat2, lblStat3, lblStat4;
+    @FXML private Label lblInventarioContador, lblTituloCarta, lblDescripcion, lblQuedanOpciones;
     @FXML private ImageView imgCarta;
-    @FXML private Label lblDescripcion;
-    @FXML private VBox boxCartaInterna;
 
     private Partida partidaActual;
     private Carta cartaEnPantalla;
 
-    @FXML public void initialize() {}
-
     public void setPartida(Partida partida) {
         this.partidaActual = partida;
+        actualizarInterfaz(); // Aquí se aplicará el rojo inicial
         cargarSiguienteCarta();
     }
 
@@ -45,13 +36,7 @@ public class JuegoController {
             return;
         }
 
-        if (comprobarDerrotaInmediata()) {
-            gestionarFinDePartida();
-            return;
-        }
-
         this.cartaEnPantalla = partidaActual.getSiguienteCarta();
-
         if (this.cartaEnPantalla != null) {
             lblTituloCarta.setText(cartaEnPantalla.getTitulo());
             lblDescripcion.setText(cartaEnPantalla.getDescripcion());
@@ -61,40 +46,66 @@ public class JuegoController {
                     if (!ruta.startsWith("/")) ruta = "/" + ruta;
                     imgCarta.setImage(new Image(getClass().getResourceAsStream(ruta)));
                 }
-            } catch (Exception e) { System.err.println("Imagen no encontrada"); }
+            } catch (Exception e) { System.err.println("Imagen no encontrada."); }
         }
-        actualizarEstadisticasVista();
+        actualizarInterfaz();
     }
 
-    private void actualizarEstadisticasVista() {
-        lblStat1.setText(partidaActual.getSalud() + "%");
-        lblStat2.setText(partidaActual.getBienestar() + "%");
-        lblStat3.setText(partidaActual.getLegado() + "%");
-        lblStat4.setText(partidaActual.getRecursos() + "%");
-
-        // Capacidad dinámica (10 u 11)
-        int capacidad = partidaActual.getCapacidadInventario();
-        lblInventarioContador.setText(partidaActual.getInventario().size() + "/" + capacidad);
-    }
-
-    @FXML private void accionAnadir() {
+    @FXML
+    private void accionAnadir() {
         if (cartaEnPantalla == null) return;
-        int capacidad = partidaActual.getCapacidadInventario();
-        if (partidaActual.getInventario().size() >= capacidad) {
-            mostrarAlerta("Mochila llena", "No caben más cartas. Descarta esta.");
+        if (partidaActual.getInventario().size() >= partidaActual.getCapacidadInventario()) {
+            mostrarAlerta("Mochila llena", "No hay espacio. Descarta esta opción.");
             return;
         }
         partidaActual.elegirCarta(cartaEnPantalla);
         cargarSiguienteCarta();
     }
 
-    @FXML private void accionDescartar() {
+    @FXML
+    private void accionDescartar() {
         if (cartaEnPantalla == null) return;
         partidaActual.descartarCarta();
         cargarSiguienteCarta();
     }
 
-    @FXML private void abrirInventario() {
+    private void actualizarInterfaz() {
+        actualizarLabelStat(lblStat1, partidaActual.getSalud());
+        actualizarLabelStat(lblStat2, partidaActual.getBienestar());
+        actualizarLabelStat(lblStat3, partidaActual.getLegado());
+        actualizarLabelStat(lblStat4, partidaActual.getRecursos());
+
+        lblInventarioContador.setText(partidaActual.getInventario().size() + "/" + partidaActual.getCapacidadInventario());
+
+        int queda = partidaActual.getMazoCartas().size() - partidaActual.getCartaActualIndex();
+        lblQuedanOpciones.setText("Quedan " + queda + " opciones");
+    }
+
+    private void actualizarLabelStat(Label label, int valor) {
+        label.setText(valor + "%");
+        if (valor < 50) {
+            // ROJO para peligro (se activará al inicio por estar al 0%)
+            label.setStyle("-fx-text-fill: #FF3333; -fx-font-weight: bold;");
+        } else {
+            // Color oscuro original de tu diseño para valores seguros
+            label.setStyle("-fx-text-fill: #263238; -fx-font-weight: bold;");
+        }
+    }
+
+    private void gestionarFinDePartida() {
+        boolean esVictoria = !partidaActual.getResultadoFinal().contains("FRACASADO");
+        try {
+            String fxml = esVictoria ? "/org/example/demo/victoria-view.fxml" : "/org/example/demo/derrota-view.fxml";
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            Parent root = loader.load();
+            FinPartidaController controller = loader.getController();
+            controller.setPartida(this.partidaActual);
+            lblTituloCarta.getScene().setRoot(root);
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    @FXML
+    private void abrirInventario() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/demo/inventario-view.fxml"));
             Parent root = loader.load();
@@ -102,44 +113,14 @@ public class JuegoController {
             controller.cargarDatos(partidaActual.getInventario());
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Inventario");
             stage.setScene(new Scene(root));
-            stage.setResizable(false);
             stage.showAndWait();
         } catch (IOException e) { e.printStackTrace(); }
     }
 
-    private boolean comprobarDerrotaInmediata() {
-        return partidaActual.getResultadoFinal().contains("FRACASADO");
-    }
-
-    private void gestionarFinDePartida() {
-        boolean esDerrota = partidaActual.getResultadoFinal().contains("FRACASADO");
-        navegarAPantallaFinal(!esDerrota);
-    }
-
-    private void navegarAPantallaFinal(boolean esVictoria) {
-        try {
-            String fxml = esVictoria ? "/org/example/demo/victoria-view.fxml" : "/org/example/demo/derrota-view.fxml";
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
-            Parent root = loader.load();
-
-            // PASAMOS LA PARTIDA AL CONTROLADOR FINAL PARA PODER GUARDARLA
-            FinPartidaController controller = loader.getController();
-            controller.setPartida(this.partidaActual);
-
-            if (lblTituloCarta.getScene() != null) {
-                lblTituloCarta.getScene().setRoot(root);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(titulo);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+    private void mostrarAlerta(String t, String m) {
+        Alert a = new Alert(Alert.AlertType.WARNING);
+        a.setTitle(t); a.setHeaderText(null); a.setContentText(m);
+        a.showAndWait();
     }
 }

@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import org.example.demo.DB.PartidaDAO;
 import org.example.demo.LOGIC.Partida;
@@ -15,14 +16,31 @@ public class FinPartidaController {
 
     @FXML private Button btnVolver;
 
-    // Aquí guardamos los datos de la partida que acaba de terminar
+    // Labels para mostrar las estadísticas finales
+    @FXML private Label lblFinalSalud;
+    @FXML private Label lblFinalBienestar;
+    @FXML private Label lblFinalLegado;
+    @FXML private Label lblFinalRecursos;
+    @FXML private Label lblCausaDerrota; // Solo en derrota
+
     private Partida partidaFinalizada;
 
     /**
-     * Este método recibe la partida desde JuegoController.
+     * Recibe los datos de la partida y rellena la interfaz.
      */
     public void setPartida(Partida partida) {
         this.partidaFinalizada = partida;
+
+        // Rellenamos los labels con los valores reales al terminar
+        if (lblFinalSalud != null) lblFinalSalud.setText(partida.getSalud() + "%");
+        if (lblFinalBienestar != null) lblFinalBienestar.setText(partida.getBienestar() + "%");
+        if (lblFinalLegado != null) lblFinalLegado.setText(partida.getLegado() + "%");
+        if (lblFinalRecursos != null) lblFinalRecursos.setText(partida.getRecursos() + "%");
+
+        // Si estamos en derrota, mostramos la causa específica del fracaso
+        if (lblCausaDerrota != null) {
+            lblCausaDerrota.setText(partida.getResultadoFinal());
+        }
     }
 
     @FXML
@@ -30,37 +48,20 @@ public class FinPartidaController {
         cambiarPantalla("/org/example/demo/presentacion-view.fxml");
     }
 
-    /**
-     * Botón "Registrar Partida" (Pantalla Victoria)
-     */
     @FXML
     private void registrarPartida() {
         guardarYVerRanking();
     }
 
-    /**
-     * Botón "Ver Ranking" (Pantalla Derrota)
-     * CORRECCIÓN: Ahora este método TAMBIÉN guarda la partida antes de ir al ranking.
-     */
     @FXML
     private void verRanking() {
         guardarYVerRanking();
     }
 
-    // --- MÉTODOS AUXILIARES ---
-
     private void guardarYVerRanking() {
-        if (partidaFinalizada == null) {
-            mostrarAlerta("Error", "No se han encontrado datos de la partida.");
-            return;
-        }
-
-        // 1. GUARDAR EN BASE DE DATOS
-        // (Esto asegura que tanto Victorias como Derrotas queden registradas)
+        if (partidaFinalizada == null) return;
         PartidaDAO dao = new PartidaDAO();
         dao.guardarPartida(partidaFinalizada);
-
-        // 2. IR A LA PANTALLA DE REGISTRO
         cambiarPantalla("/org/example/demo/registro-view.fxml");
     }
 
@@ -68,22 +69,8 @@ public class FinPartidaController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Parent root = loader.load();
-
-            // Mantenemos la misma ventana y tamaño
             Stage stage = (Stage) btnVolver.getScene().getWindow();
             stage.getScene().setRoot(root);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            mostrarAlerta("Error de Navegación", "No se pudo cargar la pantalla: " + fxml);
-        }
-    }
-
-    private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        } catch (IOException e) { e.printStackTrace(); }
     }
 }

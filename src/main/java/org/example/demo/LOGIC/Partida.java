@@ -4,31 +4,25 @@ import lombok.Data;
 import org.example.demo.DB.CartaDAO;
 import org.example.demo.DB.DAO;
 import org.example.demo.MODEL.Carta;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 public class Partida {
-
     private String nombreComite = "Comité Anónimo";
+    private String nombrePresidente = "";
 
-    // --- CORRECCIÓN 2A: NUEVO CAMPO ---
-    private String nombrePresidente = ""; // Aquí guardaremos el nombre real del presidente
-    // ----------------------------------
-
-    private int salud = 50;
-    private int bienestar = 50;
-    private int legado = 50;
-    private int recursos = 50;
+    // AHORA EMPIEZAN EN 0%
+    private int salud = 0;
+    private int bienestar = 0;
+    private int legado = 0;
+    private int recursos = 0;
 
     private int capacidadInventario = 10;
     private List<Carta> inventario = new ArrayList<>();
-
     private List<Carta> mazoCartas;
     private int cartaActualIndex = 0;
     private boolean presidenteSalvado = false;
-
     private DAO cartaDAO;
 
     public Partida() {
@@ -36,36 +30,20 @@ public class Partida {
         this.mazoCartas = cartaDAO.cargarCartas();
     }
 
-    public void aumentarCapacidadInventario() {
-        this.capacidadInventario = 11;
-    }
-
-    public void salvarPresidente() {
-        this.presidenteSalvado = true;
-    }
-
-    public Carta getSiguienteCarta() {
-        if (cartaActualIndex < mazoCartas.size()) {
-            return mazoCartas.get(cartaActualIndex);
-        }
-        return null;
-    }
-
     public void elegirCarta(Carta carta) {
         if (inventario.size() < capacidadInventario) {
-            inventario.add(carta);
-            this.salud += carta.getSalud();
-            this.bienestar += carta.getBienestar();
-            this.legado += carta.getLegado();
-            this.recursos += carta.getRecursos();
-        } else {
-            System.out.println("Inventario lleno.");
+            this.inventario.add(carta);
+            // Aplicamos topes: no baja de 0 ni sube de 100
+            this.salud = Math.max(0, Math.min(100, this.salud + carta.getSalud()));
+            this.bienestar = Math.max(0, Math.min(100, this.bienestar + carta.getBienestar()));
+            this.legado = Math.max(0, Math.min(100, this.legado + carta.getLegado()));
+            this.recursos = Math.max(0, Math.min(100, this.recursos + carta.getRecursos()));
         }
-        cartaActualIndex++;
+        this.cartaActualIndex++;
     }
 
     public void descartarCarta() {
-        cartaActualIndex++;
+        this.cartaActualIndex++;
     }
 
     public boolean isJuegoTerminado() {
@@ -73,18 +51,18 @@ public class Partida {
     }
 
     public String getResultadoFinal() {
-        final int UMBRAL_FRACASO = 25;
-        if (salud < UMBRAL_FRACASO || bienestar < UMBRAL_FRACASO || legado < UMBRAL_FRACASO || recursos < UMBRAL_FRACASO) {
-            String causa = "causas desconocidas";
-            if (salud < UMBRAL_FRACASO) causa = "la enfermedad (salud)";
-            else if (bienestar < UMBRAL_FRACASO) causa = "la desesperación (bienestar)";
-            else if (recursos < UMBRAL_FRACASO) causa = "el hambre (recursos)";
-            else if (legado < UMBRAL_FRACASO) causa = "la anarquía (legado)";
-            return "Tu colonia ha FRACASADO debido a " + causa + ".";
+        final int UMBRAL_DERROTA = 50;
+        if (salud < UMBRAL_DERROTA || bienestar < UMBRAL_DERROTA || legado < UMBRAL_DERROTA || recursos < UMBRAL_DERROTA) {
+            return "Tu colonia ha FRACASADO. No has logrado alcanzar el 50% de estabilidad mínima.";
         }
-        int puntuacion = Math.min(Math.min(salud, bienestar), Math.min(legado, recursos));
-        if (puntuacion > 80) return "¡ÉXITO TOTAL! Una utopía perfecta.";
-        if (puntuacion > 50) return "SOBREVIVÍS. Será duro, pero hay esperanza.";
-        return "SOBREVIVÍS POR LOS PELOS. El invierno será cruel.";
+        return "¡VICTORIA! La colonia ha prosperado partiendo de la nada.";
     }
+
+    public Carta getSiguienteCarta() {
+        if (cartaActualIndex < mazoCartas.size()) return mazoCartas.get(cartaActualIndex);
+        return null;
+    }
+
+    public void aumentarCapacidadInventario() { this.capacidadInventario = 11; }
+    public void salvarPresidente() { this.presidenteSalvado = true; }
 }
