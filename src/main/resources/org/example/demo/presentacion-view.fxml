@@ -5,42 +5,46 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="rootPane"
-            maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="600.0" prefWidth="800.0"
-            stylesheets="@estilos.css"
-            xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.demo.UI.PresentacionController">
+<BorderPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.UI.PresentacionController">
 
    <bottom>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="800.0" spacing="65.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="btnInstrucciones" mnemonicParsing="false" onAction="#Instrucciones" text="Instrucciones" textOverrun="CLIP">
+            <Button fx:id="btnInstrucciones" mnemonicParsing="false" onAction="#Instrucciones" prefHeight="41.0" prefWidth="130.0" text="Instrucciones" textOverrun="CLIP">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </Button>
-            <Button fx:id="btnJugar" mnemonicParsing="false" onAction="#Jugar" text="Jugar" />
+            <Button fx:id="btnJugar" mnemonicParsing="false" onAction="#Jugar" prefHeight="42.0" prefWidth="130.0" text="Jugar" />
          </children>
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
       </HBox>
    </bottom>
 
    <top>
-      <Label fx:id="lblTitulo" text="El comité del fin del mundo" textFill="#fff8f8" BorderPane.alignment="CENTER">
-         <font>
-            <Font name="DejaVu Serif Bold" size="30.0" />
-         </font>
-         <BorderPane.margin>
-            <Insets top="30.0" />
-         </BorderPane.margin>
-      </Label>
+      <AnchorPane prefHeight="100.0">
+         <children>
+            <Label fx:id="lblTitulo" alignment="CENTER" text="El Comité del Fin del Mundo" textFill="#fff8f8" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+               <font>
+                  <Font name="DejaVu Serif Bold" size="30.0" />
+               </font>
+            </Label>
+
+            <Button fx:id="btnIdioma" layoutX="720.0" layoutY="25.0" mnemonicParsing="false" onAction="#cambiarIdioma" style="-fx-background-color: transparent; -fx-cursor: hand;" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+               <graphic>
+                  <ImageView fx:id="imgBandera" fitHeight="40.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@reinoUnidoBandera.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </AnchorPane>
    </top>
 
    <center>

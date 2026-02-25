@@ -3,31 +3,52 @@ package org.example.demo.UI;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import org.example.demo.LOGIC.LanguageManager;
 
 import java.io.IOException;
 
 public class ModoJuegoController {
 
-    @FXML
-    private Button btnIndividual;
-
-    @FXML
-    private Button btnGrupo;
+    @FXML private Button btnIndividual;
+    @FXML private Button btnGrupo;
+    @FXML private Button btnVolver;
+    @FXML private Label lblTituloSeleccion;
+    @FXML private Label lblPreguntaModo;
 
     @FXML
     public void initialize() {
-        System.out.println("Pantalla de Selección de Modo cargada.");
+        // ACTUALIZACIÓN DE TEXTOS SEGÚN IDIOMA
+        if (lblTituloSeleccion != null) {
+            lblTituloSeleccion.setText(LanguageManager.getString("game.title"));
+        }
+
+        if (lblPreguntaModo != null) {
+            lblPreguntaModo.setText(LanguageManager.getString("mode.title"));
+        }
+
+        btnIndividual.setText(LanguageManager.getString("mode.individual"));
+        btnGrupo.setText(LanguageManager.getString("mode.group"));
+
+        if (btnVolver != null) {
+            btnVolver.setText(LanguageManager.getString("btn.back"));
+        }
     }
 
     @FXML
     private void jugarIndividual() {
+        MusicManager.playClickSound();
+        MusicManager.stopIntroMusic();
+        MusicManager.playSelectionMusic();
         abrirInputNombre(false);
     }
 
     @FXML
     private void jugarGrupo() {
+        MusicManager.playClickSound();
+        MusicManager.stopIntroMusic();
+        MusicManager.playSelectionMusic();
         abrirInputNombre(true);
     }
 
@@ -39,9 +60,7 @@ public class ModoJuegoController {
             InputNombreController controller = loader.getController();
             controller.setModoJuego(esGrupo);
 
-            // MANTENER TAMAÑO: Cambiar solo el root
             btnIndividual.getScene().setRoot(root);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -49,9 +68,9 @@ public class ModoJuegoController {
 
     @FXML
     private void volverAtras() {
+        MusicManager.playClickSound();
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/org/example/demo/presentacion-view.fxml"));
-            // MANTENER TAMAÑO
             btnIndividual.getScene().setRoot(root);
         } catch (IOException e) {
             e.printStackTrace();

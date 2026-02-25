@@ -12,7 +12,6 @@ public class Partida {
     private String nombreComite = "Comité Anónimo";
     private String nombrePresidente = "";
 
-    // AHORA EMPIEZAN EN 0%
     private int salud = 0;
     private int bienestar = 0;
     private int legado = 0;
@@ -22,18 +21,48 @@ public class Partida {
     private List<Carta> inventario = new ArrayList<>();
     private List<Carta> mazoCartas;
     private int cartaActualIndex = 0;
-    private boolean presidenteSalvado = false;
+    private boolean presidenteSalvado = false; // Indica si el presidente se salvó
     private DAO cartaDAO;
+
+    private String mensajePenalizacion = "";
 
     public Partida() {
         this.cartaDAO = new CartaDAO();
         this.mazoCartas = cartaDAO.cargarCartas();
     }
 
+    public void aplicarPenalizaciones() {
+        int huecosVacios = capacidadInventario - inventario.size();
+
+        if (huecosVacios > 0) {
+            int penalizacionTotal = huecosVacios * 10;
+
+            this.salud = Math.max(0, this.salud - penalizacionTotal);
+            this.bienestar = Math.max(0, this.bienestar - penalizacionTotal);
+            this.legado = Math.max(0, this.legado - penalizacionTotal);
+            this.recursos = Math.max(0, this.recursos - penalizacionTotal);
+
+            // TRADUCCIÓN DINÁMICA DEL MENSAJE
+            if (LanguageManager.getCurrentLocale().getLanguage().equals("en")) {
+                this.mensajePenalizacion = "Due to the committee's lack of responsibility and wrong decisions, " +
+                        "the colony will be penalized with -" + penalizacionTotal + "% in each statistic " +
+                        "for leaving " + huecosVacios + " empty slot(s) in the ship.";
+            } else {
+                this.mensajePenalizacion = "Ante las decisiones equivocadas del comité por falta de responsabilidad, " +
+                        "se penalizará la colonia con -" + penalizacionTotal + "% en cada estadística " +
+                        "por haber dejado " + huecosVacios + " hueco(s) vacíos en la nave.";
+            }
+        }
+    }
+
     public void elegirCarta(Carta carta) {
         if (inventario.size() < capacidadInventario) {
             this.inventario.add(carta);
-            // Aplicamos topes: no baja de 0 ni sube de 100
+
+            if (carta.getTitulo().equalsIgnoreCase("El Psicópata")) {
+                this.capacidadInventario += 2;
+            }
+
             this.salud = Math.max(0, Math.min(100, this.salud + carta.getSalud()));
             this.bienestar = Math.max(0, Math.min(100, this.bienestar + carta.getBienestar()));
             this.legado = Math.max(0, Math.min(100, this.legado + carta.getLegado()));
@@ -63,6 +92,9 @@ public class Partida {
         return null;
     }
 
-    public void aumentarCapacidadInventario() { this.capacidadInventario = 11; }
-    public void salvarPresidente() { this.presidenteSalvado = true; }
+    public void aumentarCapacidadInventario() { this.capacidadInventario++; }
+
+    public void salvarPresidente() {
+        this.presidenteSalvado = true;
+    }
 }

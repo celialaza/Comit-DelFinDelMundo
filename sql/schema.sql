@@ -1,23 +1,31 @@
 
-CREATE DATABASE IF NOT EXISTS juego_db;
+CREATE DATABASE juego_db;
 USE juego_db;
 
-CREATE TABLE IF NOT EXISTS Historial_Partidas (
-                                                  id INT AUTO_INCREMENT PRIMARY KEY,
-                                                  nombre_comite VARCHAR(100),
-                                                  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                                                  resultado VARCHAR(50), -- "VICTORIA" o "DERROTA"
-                                                  nombre_presidente_salvado VARCHAR(100) -- Se rellena solo si se salvó él mismo
+-- 1. Creamos la tabla de partidas con TODAS las columnas desde el principio
+CREATE TABLE Historial_Partidas (
+                                    id INT AUTO_INCREMENT PRIMARY KEY,
+                                    nombre_comite VARCHAR(100),
+                                    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                    resultado VARCHAR(50),
+                                    nombre_presidente_salvado VARCHAR(100),
+    -- Estadísticas necesarias para el nuevo ranking
+                                    salud INT DEFAULT 0,
+                                    bienestar INT DEFAULT 0,
+                                    legado INT DEFAULT 0,
+                                    recursos INT DEFAULT 0
 );
 
--- TABLA NUEVA 2: Inventario de cada partida
-CREATE TABLE IF NOT EXISTS Historial_Inventario (
-                                                    id INT AUTO_INCREMENT PRIMARY KEY,
-                                                    partida_id INT,
-                                                    titulo_carta VARCHAR(100),
-                                                    FOREIGN KEY (partida_id) REFERENCES Historial_Partidas(id) ON DELETE CASCADE
+-- 2. Tabla de inventario
+CREATE TABLE Historial_Inventario (
+                                      id INT AUTO_INCREMENT PRIMARY KEY,
+                                      partida_id INT,
+                                      titulo_carta VARCHAR(100),
+                                      FOREIGN KEY (partida_id) REFERENCES Historial_Partidas(id) ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS Cartas (
+
+-- 3. Tabla de cartas
+CREATE TABLE cartas (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         titulo VARCHAR(100) NOT NULL,
                         descripcion VARCHAR(500),
@@ -42,25 +50,25 @@ VALUES
     ('Estrella de TikTok', 'Una estrella de TikTok con millones de seguidores que ha convertido su creatividad y carisma en un imperio.', 'img/influencer.png', -10, 35, 15, 0),
 
     -- 2. Médico Joven (1)
-    ('Médico Joven (1)', 'Un médico joven y guapo que acaba de terminar su residencia. Es el médico que todas las mujeres (y hombres) sueñan con tener. Su sonrisa derrite corazones, pero es su calidez y compasión lo que te hace querer quedarte a su lado para siempre.', 'img/Medico.png', 30, 10, 15, 5),
+    ('Un Médico', 'Un médico joven y guapo que acaba de terminar su residencia. Es el médico que todas las mujeres (y hombres) sueñan con tener. Su sonrisa derrite corazones, pero es su calidez y compasión lo que te hace querer quedarte a su lado para siempre.', 'img/Medico.png', 30, 10, 15, 5),
 
     -- 3. Médicos Jóvenes (2)
-    ('Médicos Jóvenes (2)', 'Dos médicos jóvenes y guapos con mucha experiencia en el sector. No solo son médicos brillantes, sino también unas personas compasivas que realmente se preocupan por sus pacientes. Su juventud y atractivo son solo un extra.', 'img/DosMedicos.png', 40, 5, 10, -5),
+    ('Dos Médicos', 'Dos médicos jóvenes y guapos con mucha experiencia en el sector. No solo son médicos brillantes, sino también unas personas compasivas que realmente se preocupan por sus pacientes. Su juventud y atractivo son solo un extra.', 'img/DosMedicos.png', 40, 5, 10, -5),
 
     -- 4. Cien Semillas
-    ('Cien Semillas (100kg)', 'Cien tipos de semillas aleatorias (1 kilogramo por cada una). ¿Cuáles? No lo sabemos.', 'img/SemillasAleatorias.png', 5, -10, 0, 45),
+    ('Semillas (100kg)', 'Cien tipos de semillas aleatorias (1 kilogramo por cada una). ¿Cuáles? No lo sabemos.', 'img/SemillasAleatorias.png', 5, -10, 0, 45),
 
     -- 5. Psicóloga
     ('Psicóloga', 'Una psicóloga guapa e inteligente. Su belleza es solo el reflejo de su alma compasiva y su profesionalismo es la prueba de su dedicación a ayudarte a superar cualquier obstáculo que se interponga en tu camino.', 'img/Psicologa.png', 25, 30, 5, 0),
 
     -- 6. Disco Duro (Historia)
-    ('Disco Duro (Historia)', 'Un disco duro con la historia de toda la humanidad. Desde nuestros orígenes hasta el día de hoy.', 'img/discoduro.jpg', 0, 5, 40, 0),
+    ('Disco Duro', 'Un disco duro con la historia de toda la humanidad. Desde nuestros orígenes hasta el día de hoy.', 'img/discoduro.jpg', 0, 5, 40, 0),
 
     -- 7. Cincuenta Niños
-    ('Cincuenta Niños', 'Cincuenta niñ@s aleatorios. Hemos sorteado estos puestos entre todos los niñ@s de 5 a 10 años del mundo y estos han sido los elegidos.', 'img/50niñ@s.png', 0, 10, 45, -25),
+    ('Cincuenta Niñ@s', 'Cincuenta niñ@s aleatorios. Hemos sorteado estos puestos entre todos los niñ@s de 5 a 10 años del mundo y estos han sido los elegidos.', 'img/50niñ@s.png', 0, 10, 45, -25),
 
     -- 8. Padres de los Niños
-    ('Padres de los Niños', 'Los padres de estos niñ@s. No sabemos nada de ellos.', 'img/50padres.png', 10, 10, 0, 15),
+    ('Padres de los Niñ@s', 'Los padres de estos niñ@s. No sabemos nada de ellos.', 'img/50padres.png', 10, 10, 0, 15),
 
     -- 9. Cristiano y Messi
     ('Cristiano y Messi', 'Cristiano Ronaldo y Lionel Messi. La humanidad les votó como representantes de nuestra especie. Se les conoce como símbolos de unión entre las diferencias que siempre nos han enfrentado.', 'img/cristianoymessi.png', -15, 40, 20, -20),
@@ -75,7 +83,7 @@ VALUES
     ('Explorador Líder', 'Un explorador, especialista en sobrevivir en las condiciones más límites. Está un poco flipado pero está preparado para lo peor, sería buen líder.', 'img/exploradorLider.png', 10, -10, 0, 30),
 
     -- 13. La Biblia
-    ('La Biblia (Idiomas)', 'La biblia. Las sagradas escrituras. En todos los idiomas.', 'img/laBiblia.png', 0, 25, 20, 0),
+    ('La Biblia', 'La biblia. Las sagradas escrituras. En todos los idiomas.', 'img/laBiblia.png', 0, 25, 20, 0),
 
     -- 14. Lote de Higiene
     ('Lote de Higiene', 'Un lote de productos de higiene básico para cada uno de los integrantes de la nave. Gel, toallas, cepillo de dientes, desodorante, y demás.', 'img/LoteHigiene.png', 30, 15, 0, 5),
@@ -99,22 +107,22 @@ VALUES
     ('Máquina Pis-Agua', 'Una máquina que transforma el pis en agua. De hecho, transforma el pis en mucha más agua por lo que siempre habrá más agua, el invento es raro pero muy práctico.', 'img/MaquinaPisAgua.png', 15, 0, 10, 45),
 
     -- 21. 10 Prostitutas/Gigolós
-    ('10 Prostitutas/Gigolós', 'Cinco prostitutas y cinco gigolós. Expert@s en el arte de la excitación y el placer.', 'img/ProstitutasGigolos.png', -15, 40, 0, -15),
+    ('Expert@s del Placer', 'Cinco prostitutas y cinco gigolós. Expert@s en el arte de la excitación y el placer.', 'img/ProstitutasGigolos.png', -15, 40, 0, -15),
 
     -- 22. Adolescente "Elegido"
-    ('Adolescente "Elegido"', 'Un adolescente, considerado el elegido por muchos, profetizó el cataclismo devastador. Afirmó que sus sueños le habían mostrado el camino hacia el nuevo mundo, y que por lo tanto debía ser él quien guiara la expedición.', 'img/AdolescenteElegido.png', -5, 10, 10, -5),
+    ('"El Elegido"', 'Un adolescente, considerado el elegido por muchos, profetizó el cataclismo devastador. Afirmó que sus sueños le habían mostrado el camino hacia el nuevo mundo, y que por lo tanto debía ser él quien guiara la expedición.', 'img/AdolescenteElegido.png', -5, 10, 10, -5),
 
     -- 23. El Psicópata (Efecto Especial)
-    ('El Psicópata', 'Un espacio libre... ¿Una bendición o una trampa? Un psicópata acecha entre ellos, ofreciendo más espacio en la nave sin necesidad de ocupar uno propio. Su identidad permanece oculta, y cada decisión podría ser la última. Actualmente tienen 5 huecos, pero si ceden ante la oferta del psicópata, tendrán un lugar adicional.', 'img/Psicopata.png', -40, -40, -20, 5),
+    ('El Psicópata', 'Un espacio libre... ¿Una bendición o una trampa? Un psicópata acecha entre ellos, ofreciendo dos espacios, ocupando el uno propio. Su identidad permanece oculta, y cada decisión podría ser la última. Si ceden ante la oferta del psicópata, tendrán un lugar adicional.', 'img/Psicopata.png', -40, -40, -20, 5),
 
     -- 24. Tesoro Culinario
-    ('Tesoro Culinario (Med.)', 'El tesoro culinario del Mediterráneo: una colección completa de recetas e ingredientes que te transportarán a las soleadas costas de Grecia, Italia y España. Cada plato es una explosión de sabor y tradición.', 'img/ComidaMediterranea.png', 10, 25, 5, 20),
+    ('Tesoro Culinario', 'El tesoro culinario del Mediterráneo: una colección completa de recetas e ingredientes que te transportarán a las soleadas costas de Grecia, Italia y España. Cada plato es una explosión de sabor y tradición.', 'img/ComidaMediterranea.png', 10, 25, 5, 20),
 
     -- 25. Superordenador (IA)
-    ('Superordenador (IA)', 'El superordenador definitivo, equipado con la IA más avanzada. Su capacidad de procesamiento y análisis no tienen límites. Desde cálculos intrincados hasta simulaciones detalladas, es la clave para desbloquear el futuro.', 'img/SuperordenadorIA.png', 0, 0, 30, 45),
+    ('Super Ordenador', 'El superordenador definitivo, equipado con la IA más avanzada. Su capacidad de procesamiento y análisis no tienen límites. Desde cálculos intrincados hasta simulaciones detalladas, es la clave para desbloquear el futuro.', 'img/SuperordenadorIA.png', 0, 0, 30, 45),
 
     -- 26. Máquina electricidad + Ciclista
-    ('Máquina electricidad + Ciclista', 'Una máquina generadora de electricidad impulsada por pedales, combinada con la fuerza y resistencia de un ciclista profesional. Esta innovadora tecnología te permitirá generar energía limpia de forma eficiente.', 'img/ElectricidadCiclista.png', 5, 5, 0, 30),
+    ('Electricidad Total', 'Una máquina generadora de electricidad impulsada por pedales, combinada con la fuerza y resistencia de un ciclista profesional. Esta innovadora tecnología te permitirá generar energía limpia de forma eficiente.', 'img/ElectricidadCiclista.png', 5, 5, 0, 30),
 
     -- 27. Obras de Arte
     ('Obras de Arte', 'Todas las obras de arte. Desde las esculturas de la antigua Grecia hasta las instalaciones de arte moderno, cada obra te contará una historia y te revelará los secretos de la creatividad humana.', 'img/ObrasArte.png', 0, 25, 35, 0),
@@ -123,7 +131,7 @@ VALUES
     ('Botiquín Definitivo', 'El botiquín definitivo, una colección completa de medicina y utensilios médicos que te permitirán atender cualquier dolencia o lesión.', 'img/Botiquin.png', 45, 0, 0, 5),
 
     -- 29. "Seres Queridos"
-    ('Seres Queridos', 'Los seres queridos del comite. Lo siento, pero vosotros no vais incluidos en esta opción.', 'img/SeresQueridosComite.png', -10, 40, 0, -10),
+    ('Seres Queridos', 'Los seres queridos del propio Comité. Lo siento, pero vosotros no vais incluidos en esta opción.', 'img/SeresQueridosComite.png', -10, 40, 0, -10),
 
     -- 30. Integrantes del Comité
-    ('Integrantes del Comité', 'Los integrantes del comité.', 'img/IntegrantesComite.png', 0, 0, 5, 5)
+    ('Integrantes del Comité', '¡Decisión de última hora! El propio Comité podrá ir en la nave.', 'img/IntegrantesComite.png', 0, 0, 5, 5)

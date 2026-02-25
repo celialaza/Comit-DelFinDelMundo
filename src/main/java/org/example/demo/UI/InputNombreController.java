@@ -3,47 +3,50 @@ package org.example.demo.UI;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
-
+import org.example.demo.LOGIC.LanguageManager;
+import org.example.demo.LOGIC.Partida;
 import java.io.IOException;
 
 public class InputNombreController {
 
     @FXML private Label lblPregunta;
     @FXML private TextField campoNombre;
+    @FXML private Button btnAtras;
+    @FXML private Button btnContinuar;
 
     private boolean esModoGrupo;
     private boolean pidiendoPresidente;
 
     public static String nombreComiteTemporal = "Comité Anónimo";
+    public static String nombrePresidenteTemporal = "";
 
     public void setModoJuego(boolean esGrupo) {
         this.esModoGrupo = esGrupo;
         this.pidiendoPresidente = false;
         nombreComiteTemporal = "Comité Anónimo";
+        nombrePresidenteTemporal = "";
 
-        lblPregunta.setText("¿CÓMO SE LLAMA EL COMITÉ?");
+        lblPregunta.setText(LanguageManager.getString("input.committee.q"));
         campoNombre.setText("");
-        campoNombre.setPromptText("Introduce el nombre del comité...");
+        campoNombre.setPromptText(LanguageManager.getString("input.committee.prompt"));
+        actualizarBotones();
     }
 
-    private void prepararInputPresidente() {
-        this.pidiendoPresidente = true;
-        lblPregunta.setText("¿CÓMO SE LLAMA EL PRESIDENTE?");
-        campoNombre.setText("");
-        campoNombre.setPromptText("Introduce el nombre del presidente...");
+    private void actualizarBotones() {
+        if (btnAtras != null) btnAtras.setText(LanguageManager.getString("btn.back"));
+        if (btnContinuar != null) btnContinuar.setText(LanguageManager.getString("btn.continue"));
     }
 
     @FXML
     private void irAlJuego() {
+        MusicManager.playClickSound();
         String texto = campoNombre.getText();
 
         if (texto == null || texto.trim().isEmpty()) {
-            mostrarAlertaError("Por favor, escribe un nombre para continuar.");
+            mostrarAlertaError(LanguageManager.getString("input.error.name"));
             return;
         }
 
@@ -52,25 +55,51 @@ public class InputNombreController {
                 nombreComiteTemporal = texto;
                 mostrarReglasPresidente();
                 prepararInputPresidente();
-                return;
+            } else {
+                nombrePresidenteTemporal = texto;
+                mostrarAvisoSecreto(texto);
+                cargarPantallaDecision(texto);
             }
-            mostrarAvisoSecreto(texto);
-            cargarPantallaDecision(texto);
         } else {
+            nombreComiteTemporal = texto;
             iniciarPartidaDirectamente(texto);
         }
+    }
+
+    private void prepararInputPresidente() {
+        this.pidiendoPresidente = true;
+        lblPregunta.setText(LanguageManager.getString("input.president.q"));
+        campoNombre.setText("");
+        campoNombre.setPromptText(LanguageManager.getString("input.president.prompt"));
+        actualizarBotones();
+        MusicManager.playSelectionMusic();
+    }
+
+    private void mostrarReglasPresidente() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(LanguageManager.getString("input.alert.rules.title"));
+        alert.setHeaderText(null);
+        alert.setContentText(LanguageManager.getString("input.alert.rules.content"));
+        aplicarEstiloDialogo(alert, "dialog-presidente");
+        alert.showAndWait();
+    }
+
+    private void mostrarAvisoSecreto(String nombrePresidente) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(LanguageManager.getString("input.alert.secret.title"));
+        alert.setHeaderText(String.format(LanguageManager.getString("input.alert.secret.header"), nombrePresidente.toUpperCase()));
+        alert.setContentText(LanguageManager.getString("input.alert.secret.content"));
+        aplicarEstiloDialogo(alert, "dialog-penalizacion");
+        alert.showAndWait();
     }
 
     private void cargarPantallaDecision(String nombrePresidente) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/demo/decision-presidente-view.fxml"));
             Parent root = loader.load();
-
             DecisionPresidenteController controller = loader.getController();
             controller.setNombrePresidente(nombrePresidente);
-
-            Stage stage = (Stage) campoNombre.getScene().getWindow();
-            stage.getScene().setRoot(root);
+            campoNombre.getScene().setRoot(root);
         } catch (IOException e) { e.printStackTrace(); }
     }
 
@@ -78,50 +107,41 @@ public class InputNombreController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/demo/JuegoView.fxml"));
             Parent root = loader.load();
-            org.example.demo.LOGIC.Partida nuevaPartida = new org.example.demo.LOGIC.Partida();
+            Partida nuevaPartida = new Partida();
             nuevaPartida.setNombreComite(nombreComite);
             JuegoController controller = loader.getController();
             controller.setPartida(nuevaPartida);
-            Stage stage = (Stage) campoNombre.getScene().getWindow();
-            stage.getScene().setRoot(root);
+            campoNombre.getScene().setRoot(root);
         } catch (IOException e) { e.printStackTrace(); }
-    }
-
-    // --- CORRECCIÓN 1: TEXTO ACTUALIZADO ---
-    private void mostrarReglasPresidente() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Elección del Presidente");
-        alert.setHeaderText("¡Atención Comité!");
-        // Aquí está el texto nuevo que pediste:
-        alert.setContentText("Solo puede haber un Presidente.\n\nEste dará los turnos de palabra en el comité y, en caso de empate, decidirá si aceptar o no una opción.");
-        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        alert.showAndWait();
-    }
-    // ---------------------------------------
-
-    private void mostrarAvisoSecreto(String nombrePresidente) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Decisión Confidencial");
-        alert.setHeaderText("¡ALTO AHÍ, " + nombrePresidente.toUpperCase() + "!");
-        alert.setContentText("La siguiente pantalla es SOLO para tus ojos.\nQue nadie más mire.");
-        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        alert.showAndWait();
     }
 
     private void mostrarAlertaError(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
+        alert.setHeaderText(null);
         alert.setContentText(mensaje);
+        aplicarEstiloDialogo(alert, "dialog-penalizacion");
         alert.showAndWait();
+    }
+
+    private void aplicarEstiloDialogo(Alert alerta, String claseCSS) {
+        DialogPane dp = alerta.getDialogPane();
+        dp.getStylesheets().add(getClass().getResource("/org/example/demo/estilos.css").toExternalForm());
+        dp.getStyleClass().add(claseCSS);
+        dp.setMinHeight(Region.USE_PREF_SIZE);
+
+        Button btnAceptar = (Button) dp.lookupButton(ButtonType.OK);
+        if (btnAceptar != null) {
+            btnAceptar.setText(LanguageManager.getString("btn.accept"));
+        }
     }
 
     @FXML
     private void volverAtras() {
+        MusicManager.playClickSound();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/demo/modo-juego-view.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) campoNombre.getScene().getWindow();
-            stage.getScene().setRoot(root);
+            campoNombre.getScene().setRoot(loader.load());
         } catch (IOException e) { e.printStackTrace(); }
     }
 }

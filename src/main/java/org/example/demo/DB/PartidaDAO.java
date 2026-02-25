@@ -2,7 +2,6 @@ package org.example.demo.DB;
 
 import org.example.demo.LOGIC.Partida;
 import org.example.demo.MODEL.Carta;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +9,7 @@ import java.util.List;
 public class PartidaDAO {
 
     public static class RegistroFila {
-        private String nombre;
-        private String fecha;
-        private String resultado;
-        private String detalles;
-
+        private String nombre, fecha, resultado, detalles;
         public RegistroFila(String n, String f, String r, String d) {
             this.nombre = n; this.fecha = f; this.resultado = r; this.detalles = d;
         }
@@ -25,97 +20,80 @@ public class PartidaDAO {
     }
 
     public void guardarPartida(Partida partida) {
-        String sqlPartida = "INSERT INTO Historial_Partidas (nombre_comite, resultado, nombre_presidente_salvado) VALUES (?, ?, ?)";
+        String sqlPartida = "INSERT INTO Historial_Partidas (nombre_comite, resultado, nombre_presidente_salvado, salud, bienestar, legado, recursos) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String sqlInventario = "INSERT INTO Historial_Inventario (partida_id, titulo_carta) VALUES (?, ?)";
 
-        String resultadoTexto = partida.getResultadoFinal().contains("FRACASADO") ? "DERROTA" : "VICTORIA";
-
-        // --- CORRECCIÓN 2C: USAMOS EL NOMBRE DEL PRESIDENTE ---
-        String nombrePresi = null;
-        if (partida.isPresidenteSalvado()) {
-            // AHORA SÍ: Usamos getNombrePresidente()
-            String nombreReal = partida.getNombrePresidente();
-
-            // Seguridad por si es nulo o vacío
-            if (nombreReal == null || nombreReal.isEmpty()) nombreReal = "Anónimo";
-
-            nombrePresi = "*** Presidente \"" + nombreReal + "\" (Salvado) ***";
-        }
-        // -----------------------------------------------------
+        String res = partida.getResultadoFinal().contains("FRACASADO") ? "DERROTA" : "VICTORIA";
+        String presi = partida.isPresidenteSalvado() ? "*** Presidente \"" + partida.getNombrePresidente() + "\" (Salvado) ***" : null;
 
         try (Connection conn = DataManager.getDataSource().getConnection()) {
             conn.setAutoCommit(false);
-
-            int partidaId = 0;
+            int id = 0;
             try (PreparedStatement stmt = conn.prepareStatement(sqlPartida, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, partida.getNombreComite());
-                stmt.setString(2, resultadoTexto);
-                stmt.setString(3, nombrePresi);
+                stmt.setString(2, res);
+                stmt.setString(3, presi);
+                stmt.setInt(4, partida.getSalud()); stmt.setInt(5, partida.getBienestar());
+                stmt.setInt(6, partida.getLegado()); stmt.setInt(7, partida.getRecursos());
                 stmt.executeUpdate();
-
                 ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    partidaId = rs.getInt(1);
-                }
+                if (rs.next()) id = rs.getInt(1);
             }
 
-            if (partidaId > 0) {
+            if (id > 0) {
                 try (PreparedStatement stmtInv = conn.prepareStatement(sqlInventario)) {
                     for (Carta c : partida.getInventario()) {
-                        stmtInv.setInt(1, partidaId);
-                        stmtInv.setString(2, c.getTitulo());
+                        String tit = c.getTitulo();
+                        // Personalización del historial (Comité e Integrantes)
+                        if (tit.equalsIgnoreCase("Integrantes del Comité")) {
+                            tit = partida.getNombreComite();
+                        } else if (tit.equalsIgnoreCase("Seres Queridos")) {
+                            tit = "LOS SERES QUERIDOS DE " + partida.getNombreComite();
+                        }
+
+                        stmtInv.setInt(1, id);
+                        stmtInv.setString(2, tit.toUpperCase());
                         stmtInv.addBatch();
                     }
                     stmtInv.executeBatch();
                 }
             }
-
             conn.commit();
-            System.out.println("Partida registrada con éxito.");
-
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
     public List<RegistroFila> obtenerHistorial(String filtro) {
         List<RegistroFila> lista = new ArrayList<>();
-        String sql = "SELECT id, nombre_comite, fecha, resultado, nombre_presidente_salvado FROM Historial_Partidas ORDER BY fecha DESC";
-
+        String sql = "SELECT * FROM Historial_Partidas ORDER BY fecha DESC";
         try (Connection conn = DataManager.getDataSource().getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
+             ResultSet rs = conn.createStatement().executeQuery(sql)) {
             while (rs.next()) {
-                int id = rs.getInt("id");
-                String nombre = rs.getString("nombre_comite");
-                String fecha = rs.getString("fecha");
-                String resultado = rs.getString("resultado");
-                String presiSalvado = rs.getString("nombre_presidente_salvado");
+                String res = rs.getString("resultado");
+                if (filtro.equals("VICTORIAS") && !res.equals("VICTORIA")) continue;
+                if (filtro.equals("DERROTAS") && !res.equals("DERROTA")) continue;
 
-                if (filtro.equals("VICTORIAS") && !resultado.equals("VICTORIA")) continue;
-                if (filtro.equals("DERROTAS") && !resultado.equals("DERROTA")) continue;
+                String det = "ESTADÍSTICAS FINALES:\n" +
+                        "Salud: " + rs.getInt("salud") + "% | Bienestar: " + rs.getInt("bienestar") + "%\n" +
+                        "Legado: " + rs.getInt("legado") + "% | Recursos: " + rs.getInt("recursos") + "%\n" +
+                        "------------------------------------------\n" +
+                        "OPCIONES ELEGIDAS:\n" +
+                        obtenerDetallesInventario(rs.getInt("id"), rs.getString("nombre_presidente_salvado"));
 
-                String detalles = obtenerDetallesInventario(id, presiSalvado);
-                lista.add(new RegistroFila(nombre, fecha, resultado, detalles));
+                lista.add(new RegistroFila(rs.getString("nombre_comite"), rs.getString("fecha"), res, det));
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return lista;
     }
 
-    private String obtenerDetallesInventario(int partidaId, String presiSalvado) {
+    private String obtenerDetallesInventario(int id, String presi) {
         StringBuilder sb = new StringBuilder();
-        String sql = "SELECT titulo_carta FROM Historial_Inventario WHERE partida_id = ?";
         try (Connection conn = DataManager.getDataSource().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, partidaId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                sb.append("- ").append(rs.getString("titulo_carta")).append("\n");
-            }
-        } catch (SQLException e) { e.printStackTrace(); }
-
-        if (presiSalvado != null && !presiSalvado.isEmpty()) {
-            sb.append("\n").append(presiSalvado);
-        }
+             PreparedStatement st = conn.prepareStatement("SELECT titulo_carta FROM Historial_Inventario WHERE partida_id = ?")) {
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) sb.append("- ").append(rs.getString("titulo_carta")).append("\n");
+        } catch (SQLException e) {}
+        if (presi != null) sb.append("\n").append(presi);
         return sb.toString();
     }
 }

@@ -3,13 +3,11 @@ package org.example.demo.UI;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import org.example.demo.LOGIC.LanguageManager;
 import org.example.demo.LOGIC.Partida;
-
 import java.io.IOException;
 
 public class DecisionPresidenteController {
@@ -17,38 +15,39 @@ public class DecisionPresidenteController {
     @FXML private Button btnEspacio;
     @FXML private Button btnSalvacion;
     @FXML private Label lblExplicacion;
+    @FXML private Label lblTituloDecision;
 
     private String nombrePresidente;
 
     public void setNombrePresidente(String nombre) {
         this.nombrePresidente = nombre;
-        if (btnSalvacion != null) {
-            btnSalvacion.setText("Salvación " + nombre);
-        }
+
+        if (lblTituloDecision != null) lblTituloDecision.setText(LanguageManager.getString("president.secret.title"));
+
         if (lblExplicacion != null) {
-            lblExplicacion.setText("¡Hola " + nombre + "! Como Presidente, tienes una decisión ejecutiva única:\n\n" +
-                    "OPCIÓN A (+1 ESPACIO): Aumentas la capacidad de la nave para todos.\n" +
-                    "OPCIÓN B (SALVACIÓN " + nombre.toUpperCase() + "): Te aseguras tu propia supervivencia (SECRETO).");
+            String baseExpl = LanguageManager.getString("president.secret.expl");
+            lblExplicacion.setText(String.format(baseExpl, nombre, nombre.toUpperCase()));
             lblExplicacion.setWrapText(true);
         }
+
+        if (btnEspacio != null) btnEspacio.setText(LanguageManager.getString("president.btn.space"));
+        if (btnSalvacion != null) btnSalvacion.setText(String.format(LanguageManager.getString("president.btn.salvation"), nombre));
     }
 
     @FXML
     private void elegirEspacio() {
+        MusicManager.playClickSound();
         Partida nuevaPartida = new Partida();
         nuevaPartida.setNombreComite(InputNombreController.nombreComiteTemporal);
-
-        // --- CORRECCIÓN 2B: GUARDAMOS EL NOMBRE DEL PRESIDENTE ---
         nuevaPartida.setNombrePresidente(this.nombrePresidente);
-        // ---------------------------------------------------------
-
         nuevaPartida.aumentarCapacidadInventario();
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Comunicado Oficial");
-        alert.setHeaderText("¡DECISIÓN DEL PRESIDENTE REVELADA!");
-        alert.setContentText(nombrePresidente + " ha decidido aumentar el espacio de la nave.\n(Todo el comité puede volver a mirar)");
-        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        alert.setTitle(LanguageManager.getString("president.alert.title"));
+        alert.setHeaderText(LanguageManager.getString("president.alert.space.header"));
+        alert.setContentText(String.format(LanguageManager.getString("president.alert.space.content"), nombrePresidente));
+
+        aplicarEstiloDialogo(alert, "dialog-presidente");
         alert.showAndWait();
 
         iniciarJuego(nuevaPartida);
@@ -56,22 +55,34 @@ public class DecisionPresidenteController {
 
     @FXML
     private void elegirSalvacion() {
+        MusicManager.playClickSound();
         Partida nuevaPartida = new Partida();
         nuevaPartida.setNombreComite(InputNombreController.nombreComiteTemporal);
-
-        // --- CORRECCIÓN 2B: GUARDAMOS EL NOMBRE DEL PRESIDENTE ---
         nuevaPartida.setNombrePresidente(this.nombrePresidente);
-        // ---------------------------------------------------------
-
         nuevaPartida.salvarPresidente();
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confidencial");
-        alert.setHeaderText("Operación completada");
-        alert.setContentText("Tu salvación ha sido registrada en secreto.\nActúa con normalidad frente al comité.");
+        alert.setTitle(LanguageManager.getString("president.alert.title"));
+        alert.setHeaderText(LanguageManager.getString("president.alert.salvation.header"));
+        alert.setContentText(LanguageManager.getString("president.alert.salvation.content"));
+
+        aplicarEstiloDialogo(alert, "dialog-presidente");
         alert.showAndWait();
 
         iniciarJuego(nuevaPartida);
+    }
+
+    private void aplicarEstiloDialogo(Alert alerta, String claseCSS) {
+        DialogPane dp = alerta.getDialogPane();
+        dp.getStylesheets().add(getClass().getResource("/org/example/demo/estilos.css").toExternalForm());
+        dp.getStyleClass().add(claseCSS);
+        dp.setMinHeight(Region.USE_PREF_SIZE);
+
+        Button btnAceptar = (Button) dp.lookupButton(ButtonType.OK);
+        Button btnCancel = (Button) dp.lookupButton(ButtonType.CANCEL);
+        if (btnAceptar != null) {
+            btnAceptar.setText(LanguageManager.getString("btn.accept"));
+        }
     }
 
     private void iniciarJuego(Partida partidaCreada) {
@@ -80,8 +91,7 @@ public class DecisionPresidenteController {
             Parent root = loader.load();
             JuegoController controller = loader.getController();
             controller.setPartida(partidaCreada);
-            Stage stage = (Stage) btnEspacio.getScene().getWindow();
-            stage.getScene().setRoot(root);
+            btnEspacio.getScene().setRoot(root);
         } catch (IOException e) { e.printStackTrace(); }
     }
 }

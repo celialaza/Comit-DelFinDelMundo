@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -7,35 +9,31 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import java.net.URL?>
-<?import java.lang.String?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0"
-            xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.demo.UI.InputNombreController">
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.UI.InputNombreController">
 
     <center>
-        <VBox alignment="CENTER" spacing="30.0" maxWidth="500.0" maxHeight="300.0" styleClass="tarjeta-azul">
+        <VBox alignment="CENTER" maxHeight="300.0" maxWidth="500.0" spacing="30.0" styleClass="tarjeta-azul">
 
             <padding>
-                <Insets top="40" right="40" bottom="40" left="40"/>
+                <Insets bottom="40" left="40" right="40" top="40" />
             </padding>
 
-            <Label fx:id="lblPregunta" text="¿CÓMO SE LLAMA EL COMITÉ?" wrapText="true" textAlignment="CENTER">
+            <Label fx:id="lblPregunta" text="¿CÓMO SE LLAMA EL COMITÉ?" textAlignment="CENTER" wrapText="true">
                 <styleClass>
                     <String fx:value="titulo-negro" />
                 </styleClass>
             </Label>
 
-            <TextField fx:id="campoNombre" promptText="Value" alignment="CENTER_LEFT">
+            <TextField fx:id="campoNombre" alignment="CENTER_LEFT" promptText="Value">
                 <styleClass>
                     <String fx:value="input-redondo" />
                 </styleClass>
             </TextField>
 
             <HBox alignment="CENTER" spacing="40.0">
-                <Button text="Atrás" onAction="#volverAtras" styleClass="boton-naranja" prefWidth="120"/>
-                <Button text="Continuar" onAction="#irAlJuego" styleClass="boton-azul" prefWidth="120"/>
+                <Button fx:id="btnAtras" onAction="#volverAtras" prefWidth="120" styleClass="boton-naranja" text="Atrás" />
+                <Button fx:id="btnContinuar" onAction="#irAlJuego" prefWidth="120" styleClass="boton-azul" text="Continuar" />
             </HBox>
 
         </VBox>

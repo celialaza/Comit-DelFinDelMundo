@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import java.net.URL?>
-<?import java.lang.String?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0"
-            xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.demo.UI.ModoJuegoController">
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.UI.ModoJuegoController">
 
     <padding>
-        <Insets top="20.0" right="25.0" bottom="20.0" left="25.0" />
+        <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
     </padding>
 
     <top>
-        <Label fx:id="lblTitulo" text="El comité del fin del mundo" BorderPane.alignment="CENTER">
+        <Label fx:id="lblTituloSeleccion" text="El Comité del Fin del Mundo" BorderPane.alignment="CENTER">
             <font>
                 <Font name="DejaVu Serif Bold" size="32.0" />
             </font>
@@ -34,25 +32,20 @@
     <center>
         <VBox alignment="CENTER" spacing="30.0" BorderPane.alignment="CENTER">
             <children>
-                <Label text="¿Cómo quieres jugar?" textFill="white" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                <Label fx:id="lblPreguntaModo" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="¿Cómo quieres jugar?" textFill="white" />
 
-                <Button fx:id="btnIndividual" mnemonicParsing="false" onAction="#jugarIndividual" text="MODO INDIVIDUAL" prefWidth="200" prefHeight="50"/>
+                <Button fx:id="btnIndividual" mnemonicParsing="false" onAction="#jugarIndividual" prefHeight="50" prefWidth="200" text="MODO INDIVIDUAL" />
 
-                <Button fx:id="btnGrupo" mnemonicParsing="false" onAction="#jugarGrupo" text="MODO GRUPO" prefWidth="200" prefHeight="50"/>
+                <Button fx:id="btnGrupo" mnemonicParsing="false" onAction="#jugarGrupo" prefHeight="50" prefWidth="200" text="MODO GRUPO" />
             </children>
         </VBox>
     </center>
 
     <bottom>
-        <Button text="Volver" onAction="#volverAtras" BorderPane.alignment="CENTER_LEFT">
-            <styleClass>
-                <String fx:value="boton-volver" />
-            </styleClass>
-        </Button>
+        <Button fx:id="btnVolver" onAction="#volverAtras" text="Volver" BorderPane.alignment="CENTER_LEFT" />
     </bottom>
 
     <stylesheets>
         <URL value="@estilos.css" />
     </stylesheets>
-
 </BorderPane>
