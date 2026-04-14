@@ -216,6 +216,7 @@ public class JuegoController {
 
     @FXML
     private void abrirChatIA() {
+        iniciarMusicaAccion();
         if (cartaEnPantalla == null) return;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/demo/chat-ia-view.fxml"));
